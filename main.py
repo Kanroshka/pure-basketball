@@ -45,11 +45,15 @@ class MainWindow(QMainWindow):
                     font: bold 20px;
                ''')
 
+        #
+        with open(f'TrainingText/more.txt', encoding='utf-8') as f:
+            data = f.readlines()
+
         # Информация о кнопке "Тренировка".
         self.training_information = QLabel(self)
-        self.training_information.setText('***') #Дописать!
-        self.training_information.resize(410, 200)
-        self.training_information.move(260, 270)
+        self.training_information.setText(data[1])
+        self.training_information.resize(510, 200)
+        self.training_information.move(280, 280)
         self.training_information.setStyleSheet('''
                     color: white;
                     font: bold 15px;
@@ -71,9 +75,9 @@ class MainWindow(QMainWindow):
 
         # Информация о кнопке "Новости".
         self.news_information = QLabel(self)
-        self.news_information.setText('***') #Дописать!
-        self.news_information.resize(410, 200)
-        self.news_information.move(260, 270)
+        self.news_information.setText(data[0])
+        self.news_information.resize(510, 200)
+        self.news_information.move(280, 280)
         self.news_information.setWordWrap(True)
         self.news_information.setStyleSheet('''
                     color: white;
@@ -95,22 +99,15 @@ class MainWindow(QMainWindow):
 
         # Информация о кнопке "Подробнее".
         self.more_information = QLabel(self)
-        self.more_information.setText('***') #Дописать!
-        self.more_information.resize(410, 200)
-        self.more_information.move(260, 270)
+        self.more_information.setText(data[2])
+        self.more_information.resize(510, 200)
+        self.more_information.move(280, 280)
         self.more_information.setWordWrap(True)
         self.more_information.setStyleSheet('''
                     color: white;
                     font: bold 15px;
                ''')
         self.more_information.hide()
-
-        # Окно ожидание.
-        self.qwe = QLabel(self)
-        self.qwe.setText('Привет! В дан dassasasdasdasdasdaasdasdsadad') #Дописать!
-        self.qwe.resize(410, 200)
-        self.qwe.move(10, 370)
-        self.qwe.hide()
 
         self.setMouseTracking(True)
         self.grabMouse()

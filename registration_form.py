@@ -20,11 +20,13 @@ class RegistrationForm(QDialog):
         self.setWindowTitle('Вход')
         self.setWindowIcon(QtGui.QIcon('img/photo_2021-11-09_02-23-47.jpg'))
 
+        # Поля для ввода логина.
         self.login = QLineEdit(self)
         self.login.move(7, 7)
         self.login.setPlaceholderText("Login..")
         self.login.resize(269, 40)
 
+        # Поля для ввода пароля.
         self.passwd = QLineEdit(self)
         self.passwd.move(7, 54)
         self.passwd.resize(269, 40)
@@ -33,12 +35,14 @@ class RegistrationForm(QDialog):
 
         self.passwd_and_login = [self.passwd, self.login]
 
+        # Кнопка 'Зарегистрироваться'.
         self.btn_reg = QPushButton(self)
         self.btn_reg.setText('Зарегистрироваться')
         self.btn_reg.move(7, 101)
         self.btn_reg.resize(269, 40)
         self.btn_reg.clicked.connect(self.reg)
 
+        # Кнопка 'Войти'.
         self.btn_auth = QPushButton(self)
         self.btn_auth.setText('Войти')
         self.btn_auth.move(7, 148)
@@ -83,6 +87,7 @@ class RegistrationForm(QDialog):
         self.btn_ex_msg.clicked.connect(self.cls_msg)
         self.btn_ex_msg.hide()
 
+    # Проверка корректности ввода.
     def check_input(self):
         for data in self.passwd_and_login:
             if len(data.text()) == 0:

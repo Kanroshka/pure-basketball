@@ -5,6 +5,8 @@ from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QLabel, QWidget, QPushButton
 from PyQt5.QtCore import Qt, QRect
 
+from PyQt5 import QtGui
+
 
 class WindowDetails(QWidget):
     def __init__(self):
@@ -20,6 +22,8 @@ class WindowDetails(QWidget):
         self.move(500, 100)
         self.setWindowTitle('Purebasket')
         self.setStyleSheet('''background-color: black;''')
+        self.setWindowIcon(QtGui.QIcon('img/photo_2021-11-09_02-23-47.jpg'))
+
 
         # Иконка приложения.
         self.pixmap = QPixmap('img/photo_2021-11-09_01-57-58.jpg')
@@ -45,7 +49,7 @@ class WindowDetails(QWidget):
         self.information.setAlignment(Qt.AlignHCenter)
         self.information.setWordWrap(True)
 
-        # Кнопка выхода из окна 'Новости'.
+        # Кнопка выхода из окна 'Подробнее'.
         self.btn_exit = QPushButton('Назад', self)
         self.btn_exit.move(450, 700)
         self.btn_exit.resize(100, 40)

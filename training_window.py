@@ -94,10 +94,9 @@ class TrainingWindow(QWidget):
             self.practice_cell.setWordWrap(True)
             self.practice_cell.setText(f'{data[i]}')
 
-
         # Полная версия тренировки.
         self.training_list = []
-        for i in range(1):
+        for i in range(15):
             with open(f'TrainingText/{i}.txt', encoding='utf-8') as f:
                 data = ''.join(f.readlines())
 
@@ -115,15 +114,6 @@ class TrainingWindow(QWidget):
             self.training.setAlignment(Qt.AlignHCenter)
             self.training_list.append(self.training)
             self.training.hide()
-
-        # Изображение для 1-ой тренировки.
-        self.img = QLabel(self)
-        img = QPixmap('img/1329021661_chelnok.gif')
-
-        self.img.move(590, 730)
-        self.img.resize(300, 200)
-        self.img.setPixmap(img.scaled(300, 200, Qt.KeepAspectRatio))
-        self.img.hide()
 
     def closeEvent(self, e):
         os.execl(sys.executable, sys.executable, *sys.argv)
@@ -144,13 +134,10 @@ class TrainingWindow(QWidget):
             if event.pos() in self.coordinate_training[i]:
                 location_check = True
                 self.training_list[i].show()
-                if i == 0:
-                    self.img.show()
 
         if not location_check:
             for i in range(15):
                 self.training_list[i].hide()
-                self.img.hide()
 
     def mousePressEvent(self, event):
         coordinate_exit = QRect(1390, 40, 100, 40)

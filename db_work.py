@@ -1,6 +1,7 @@
 import sqlite3
 
 
+# Проверка на авторизацию.
 def check_auth(login, passw):
     con = sqlite3.connect('DataBase/users')
     cur = con.cursor()
@@ -16,6 +17,7 @@ def check_auth(login, passw):
     con.close()
 
 
+# Регистрация пользователя.
 def register(login, passw):
     con = sqlite3.connect('DataBase/users')
     cur = con.cursor()

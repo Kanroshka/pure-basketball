@@ -23,7 +23,6 @@ class NewsWindow(QWidget):
         self.grabMouse()
 
         self.setFixedSize(1500, 1000)
-        # self.adjustSize()
         self.setWindowTitle('Purebasket  |  Новости')
         self.setWindowIcon(QtGui.QIcon('img/photo_2021-11-09_02-23-47.jpg'))
 
