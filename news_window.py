@@ -7,7 +7,7 @@ from PyQt5.QtCore import QRect, Qt
 
 from PyQt5 import QtGui
 
-from parser import parser
+from parser_news import parser
 
 from urllib import request
 
