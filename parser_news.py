@@ -37,5 +37,5 @@ def parser():
         for i in tables:
             news_text.append(f'{i.text}\n')
         news_text_final.append(news_text)
-    print(link_img)
+        
     return news_with_links, link_img, news_text_final, times
