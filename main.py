@@ -1,176 +1,75 @@
-import os
 import sys
+import os
+import sqlite3
+import subprocess
+import time
+from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QLineEdit, QTextEdit, QVBoxLayout, QHBoxLayout, QWidget, QStackedWidget, QListWidget, QListWidgetItem, QFileDialog, QDialog, QCheckBox
+from PyQt5.QtCore import Qt
 
-from PyQt5.QtCore import QRect, Qt
-from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QApplication, QPushButton, QLabel, QDialog
-from PyQt5.QtWidgets import QMainWindow
-from PyQt5 import QtGui
+from DataBase.head import create_db, add_command, add_argument, get_logs
+from home import HomePage
+from detail import DetailPage
+from constr import ConstructorPage
+from lgs import LogsPage
+from gpt import ChatPage
+from DataBase.commands_data import commands_data, arguments_data
 
-from news_window import NewsWindow
-from registration_form import RegistrationForm
-from training_window import TrainingWindow
-from window_details import WindowDetails
+create_db()
 
+
+
+for name, description in commands_data:
+    add_command(name, description)
+
+for command_name, argument, description in arguments_data:
+    add_argument(command_name, argument, description)
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.initUI()
+        self.setWindowTitle("Linux Tools")
+        self.setGeometry(100, 100, 800, 600)
 
-    def initUI(self):
-        self.setFixedSize(1000, 800)
-        self.move(500, 100)
-        self.setWindowTitle('Purebasket')
+        # Стек для страниц
+        self.stacked_widget = QStackedWidget()
+        self.setCentralWidget(self.stacked_widget)
 
-        # Иконка приложения.
-        self.pixmap = QPixmap('img/photo_2021-11-09_01-57-58.jpg')
-        self.image = QLabel(self)
-        self.image.move(280, 50)
-        self.image.resize(400, 230)
-        self.image.setPixmap(self.pixmap.scaled(400, 230, Qt.KeepAspectRatio))
-        self.image.setStyleSheet('''
-                    border: 2px  white;
-                    border-radius: 10px;''')
+        # Страницы
+        self.home_page = HomePage(self)
+        self.detail_page = DetailPage(self)
+        self.constructor_page = ConstructorPage(self)
+        self.logs_page = LogsPage(self)
+        self.chat_page = ChatPage(self)
 
-        # Кнопка переключение на тренировку.
-        self.btn_training = QPushButton('Тренировка', self)
-        self.btn_training.move(425, 550)
-        self.btn_training.resize(150, 150)
-        self.btn_training.setStyleSheet('''
-                   border: 2px solid white;
-                    border-radius: 10px;
-                    background-color: black;
-                    color: white;
-                    font: bold 20px;
-               ''')
+        # Добавление страниц в стек
+        self.stacked_widget.addWidget(self.home_page)
+        self.stacked_widget.addWidget(self.detail_page)
+        self.stacked_widget.addWidget(self.constructor_page)
+        self.stacked_widget.addWidget(self.logs_page)
+        self.stacked_widget.addWidget(self.chat_page)
 
-        #
-        with open(f'TrainingText/more.txt', encoding='utf-8') as f:
-            data = f.readlines()
+        # Переход на начальную страницу
+        self.show_home_page()
 
-        # Информация о кнопке "Тренировка".
-        self.training_information = QLabel(self)
-        self.training_information.setText(data[1])
-        self.training_information.resize(510, 200)
-        self.training_information.move(280, 280)
-        self.training_information.setStyleSheet('''
-                    color: white;
-                    font: bold 15px;
-               ''')
-        self.training_information.setWordWrap(True)
-        self.training_information.hide()
+    def show_home_page(self):
+        self.stacked_widget.setCurrentWidget(self.home_page)
 
-        # Кнопка переключение на новости
-        self.btn_news = QPushButton('Новости', self)
-        self.btn_news.move(210, 550)
-        self.btn_news.resize(150, 150)
-        self.btn_news.setStyleSheet('''
-                    border: 2px solid white;
-                    border-radius: 10px;
-                    background-color: black;
-                    color: white;
-                    font: bold 20px;
-               ''')
+    def show_detail_page(self):
+        self.stacked_widget.setCurrentWidget(self.detail_page)
 
-        # Информация о кнопке "Новости".
-        self.news_information = QLabel(self)
-        self.news_information.setText(data[0])
-        self.news_information.resize(510, 200)
-        self.news_information.move(280, 280)
-        self.news_information.setWordWrap(True)
-        self.news_information.setStyleSheet('''
-                    color: white;
-                    font: bold 15px;
-               ''')
-        self.news_information.hide()
+    def show_constructor_page(self):
+        self.stacked_widget.setCurrentWidget(self.constructor_page)
 
-        # Кнопка переключение на подробности.
-        self.btn_more = QPushButton('Подробнее', self)
-        self.btn_more.move(640, 550)
-        self.btn_more.resize(150, 150)
-        self.btn_more.setStyleSheet('''
-                   border: 2px solid white;
-                    border-radius: 10px;
-                    background-color: black;
-                    color: white;
-                    font: bold 20px;
-               ''')
+    def show_logs_page(self):
+        self.stacked_widget.setCurrentWidget(self.logs_page)
+        self.logs_page.load_logs()
 
-        # Информация о кнопке "Подробнее".
-        self.more_information = QLabel(self)
-        self.more_information.setText(data[2])
-        self.more_information.resize(510, 200)
-        self.more_information.move(280, 280)
-        self.more_information.setWordWrap(True)
-        self.more_information.setStyleSheet('''
-                    color: white;
-                    font: bold 15px;
-               ''')
-        self.more_information.hide()
-
-        self.setMouseTracking(True)
-        self.grabMouse()
-
-    def mouseMoveEvent(self, event):
-        self.training_coordinates = QRect(425, 550, 150, 150)
-        self.news_coordinates = QRect(210, 550, 150, 150)
-        self.more_coordinates = QRect(640, 550, 150, 150)
-
-        if event.pos() in self.training_coordinates:
-            self.news_information.hide()
-            self.more_information.hide()
-            self.training_information.show()
-        elif event.pos() in self.news_coordinates:
-            self.training_information.hide()
-            self.more_information.hide()
-            self.news_information.show()
-        elif event.pos() in self.more_coordinates:
-            self.training_information.hide()
-            self.news_information.hide()
-            self.more_information.show()
-        else:
-            self.training_information.hide()
-            self.news_information.hide()
-            self.more_information.hide()
-
-    def mousePressEvent(self, event):
-        if (event.button() == Qt.LeftButton) and event.pos() in self.news_coordinates:
-            try:
-                self.news_window = NewsWindow()
-            except:
-                os.execl(sys.executable, sys.executable, *sys.argv)
-            self.close()
-
-        elif (event.button() == Qt.LeftButton) and event.pos() in self.training_coordinates:
-            self.register()
-
-        elif (event.button() == Qt.LeftButton) and event.pos() in self.more_coordinates:
-            self.close()
-            self.window_details = WindowDetails()
-
-    def register(self):
-        reg_form = RegistrationForm()
-        result = reg_form.exec()
-        if result == QDialog.Accepted:
-            self.close()
-            self.training_window = TrainingWindow()
-        else:
-            os.execl(sys.executable, sys.executable, *sys.argv)
-
-
-def except_hook(cls, exception, traceback):
-    sys.__excepthook__(cls, exception, traceback)
+    def show_chat_page(self):
+        self.stacked_widget.setCurrentWidget(self.chat_page)
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    ex = MainWindow()
-    ex.show()
-    ex.setObjectName("Menu")
-    # Установить фон главного меню.
-    ex.setStyleSheet('''background-color: black;''')
-    # Установить иконку приложения.
-    ex.setWindowIcon(QtGui.QIcon('img/photo_2021-11-09_02-23-47.jpg'))
-    sys.excepthook = except_hook
-    sys.exit(app.exec())
+    main_window = MainWindow()
+    main_window.show()
+    sys.exit(app.exec_())
